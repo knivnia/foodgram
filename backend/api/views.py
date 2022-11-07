@@ -59,9 +59,9 @@ class RecipeViewSet(viewsets.ModelViewSet):
         serializer.save(author=self.request.user)
 
 
-# class RecipeIngredientsViewSet(viewsets.ModelViewSet):
-#     queryset = RecipeIngredients.objects.all()
-#     serializer_class = serializers.RecipeIngredientsSerializer
+class RecipeIngredientsViewSet(viewsets.ModelViewSet):
+    queryset = RecipeIngredients.objects.all()
+    serializer_class = serializers.RecipeIngredientsSerializer
 
 
 class IngredientViewSet(viewsets.ModelViewSet):
