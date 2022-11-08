@@ -134,5 +134,4 @@ dmypy.json
 .vscode
 .vscode/
 
-.backend/media/recipes
-.backend/media/recipes/
+.media/
