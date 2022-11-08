@@ -83,11 +83,6 @@ class RecipeSerializer(serializers.HyperlinkedModelSerializer):
     is_favorite = serializers.SerializerMethodField()
     is_in_shopping_cart = serializers.SerializerMethodField()
     image = Base64ImageField()
-    # ingredients = RecipeIngredientsSerializer(
-    #     # source='recipeingredients_set',
-    #     read_only=True,
-    #     many=True
-    # )
     ingredients = serializers.SerializerMethodField()
     tags = TagSerializer(read_only=True, many=True)
 
@@ -106,33 +101,6 @@ class RecipeSerializer(serializers.HyperlinkedModelSerializer):
     def get_ingredients(self, obj):
         queryset = RecipeIngredients.objects.filter(recipe=obj)
         return RecipeIngredientsSerializer(queryset, many=True).data
-
-    # def validate(self, data):
-        # ingredients = self.initial_data.get('ingredients')
-        # if not ingredients:
-        #     raise serializers.ValidationError({
-        #         'ingredients': 'Add at least one ingredient!'})
-        # ingredient_list = []
-        # for ingredient_item in ingredients:
-        #     ingredient = get_object_or_404(Ingredient,
-        #                                    id=ingredient_item['id'])
-        #     if ingredient in ingredient_list:
-        #         raise serializers.ValidationError('This ingredient is'
-        #                                           ' already in recipe!')
-        #     if ingredient_item['amount'] <= 0:
-        #         raise serializers.ValidationError({
-        #             'ingredients': ('Amount must be more than 0!')
-        #         })
-        #     ingredient_dict = {
-        #         'id': ingredient.id,
-        #         'name': ingredient.name,
-        #         'measurement_unit': ingredient.measurement_unit,
-        #         'amount': ingredient_item['amount']
-        #     }
-
-        #     ingredient_list.append(ingredient_dict)
-        # data['ingredients'] = ingredients
-        # return data
 
     def create_ingredients(self, ingredients, recipe):
         for ingredient in ingredients:
