@@ -1,3 +1,6 @@
+import base64
+
+from django.core.files.base import ContentFile
 from django.shortcuts import get_object_or_404
 
 from drf_extra_fields.fields import Base64ImageField
@@ -21,7 +24,10 @@ class UserSerializer(serializers.ModelSerializer):
         user = self.context.get('request').user
         if user.is_anonymous or (user == obj):
             return False
-        return Subscription.objects.filter(user=obj).exists()
+        return Subscription.objects.filter(
+            user=obj.user,
+            author=obj.author
+        ).exists()
 
     def create(self, validated_data):
         user = User(
@@ -41,8 +47,7 @@ class UserSerializer(serializers.ModelSerializer):
             'username',
             'first_name',
             'last_name',
-            'is_subscribed',
-            'password'
+            'is_subscribed'
         )
         model = User
 
@@ -82,7 +87,7 @@ class RecipeSerializer(serializers.HyperlinkedModelSerializer):
     )
     is_favorite = serializers.SerializerMethodField()
     is_in_shopping_cart = serializers.SerializerMethodField()
-    image = Base64ImageField()
+    image = Base64ImageField(required=True, allow_null=False)
     ingredients = serializers.SerializerMethodField()
     tags = TagSerializer(read_only=True, many=True)
 
@@ -102,7 +107,7 @@ class RecipeSerializer(serializers.HyperlinkedModelSerializer):
         queryset = RecipeIngredients.objects.filter(recipe=obj)
         return RecipeIngredientsSerializer(queryset, many=True).data
 
-    def create_ingredients(self, ingredients, recipe):
+    def add_ingredients(self, ingredients, recipe):
         for ingredient in ingredients:
             RecipeIngredients.objects.create(
                 recipe=recipe,
@@ -118,23 +123,24 @@ class RecipeSerializer(serializers.HyperlinkedModelSerializer):
         ingredients_data = self.initial_data.get('ingredients')
         recipe = Recipe.objects.create(**validated_data)
         recipe.tags.set(tags_data)
-        self.create_ingredients(ingredients_data, recipe)
+        self.add_ingredients(ingredients_data, recipe)
         return recipe
 
-    # def update(self, instance, validated_data):
-    #     instance.image = validated_data.get('image', instance.image)
-    #     instance.name = validated_data.get('name', instance.name)
-    #     instance.text = validated_data.get('text', instance.text)
-    #     instance.cooking_time = validated_data.get(
-    #         'cooking_time', instance.cooking_time
-    #     )
-    #     instance.tags.clear()
-    #     tags_data = self.initial_data.get('tags')
-    #     instance.tags.set(tags_data)
-    #     IngredientAmount.objects.filter(recipe=instance).all().delete()
-    #     self.create_ingredients(validated_data.get('ingredients'), instance)
-    #     instance.save()
-    #     return instance
+    def update(self, instance, validated_data):
+        recipe = Recipe.objects.get(id=instance.id)
+        if 'tags' in self.initial_data:
+            recipe.tags.clear()
+            tags_data = self.initial_data.get('tags')
+            recipe.tags.set(tags_data)
+        if 'ingredients' in self.initial_data:
+            RecipeIngredients.objects.filter(recipe=recipe).all().delete()
+            recipe.ingredients.clear()
+            ingredients_data = self.initial_data.get('ingredients')
+            self.add_ingredients(ingredients_data, recipe)
+        recipe.image = validated_data.get('image')
+        recipe.cooking_time = validated_data.get('cooking_time')
+        recipe.save()
+        return recipe
 
     class Meta:
         fields = (
@@ -150,3 +156,57 @@ class RecipeSerializer(serializers.HyperlinkedModelSerializer):
             'cooking_time'
         )
         model = Recipe
+
+
+class ShortRecipeSerializer(serializers.HyperlinkedModelSerializer):
+    image = Base64ImageField(required=True, allow_null=False)
+
+    class Meta:
+        model = Recipe
+        fields = (
+            'id',
+            'name',
+            'image',
+            'cooking_time'
+        )
+
+
+class CartSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Cart
+        fields = '__all__'
+
+
+class SubscriptionSerializer(serializers.ModelSerializer):
+    id = serializers.ReadOnlyField(source='author.id')
+    email = serializers.ReadOnlyField(source='author.email')
+    username = serializers.ReadOnlyField(source='author.username')
+    first_name = serializers.ReadOnlyField(source='author.first_name')
+    last_name = serializers.ReadOnlyField(source='author.last_name')
+    is_subscribed = serializers.SerializerMethodField()
+    recipes = serializers.SerializerMethodField()
+    recipes_count = serializers.SerializerMethodField()
+
+    class Meta:
+        model = Subscription
+        fields = ('id',
+                  'email',
+                  'username',
+                  'first_name',
+                  'last_name',
+                  'is_subscribed',
+                  'recipes',
+                  'recipes_count')
+
+    def get_is_subscribed(self, obj):
+        return Subscription.objects.filter(
+            user=obj.user,
+            author=obj.author
+        ).exists()
+
+    def get_recipes(self, obj):
+        queryset = Recipe.objects.filter(author=obj.author)
+        return ShortRecipeSerializer(queryset, many=True).data
+
+    def get_recipes_count(self, obj):
+        return Recipe.objects.filter(author=obj.author).count()
