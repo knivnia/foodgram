@@ -2,13 +2,15 @@ from reportlab.pdfbase import pdfmetrics
 from reportlab.pdfbase.ttfonts import TTFont
 from reportlab.pdfgen import canvas
 
+from django_filters.rest_framework import DjangoFilterBackend
 from django.shortcuts import get_object_or_404
 from django.http import HttpResponse
 
-from rest_framework import filters, mixins, viewsets, status
+from rest_framework import filters, viewsets, status
 from rest_framework.decorators import action
-from rest_framework.pagination import LimitOffsetPagination
-from rest_framework.permissions import IsAuthenticated, IsAuthenticatedOrReadOnly
+from rest_framework.pagination import PageNumberPagination
+from rest_framework.permissions import (IsAuthenticated,
+                                        IsAuthenticatedOrReadOnly)
 from rest_framework.response import Response
 
 from recipes.models import (Cart,
@@ -23,19 +25,17 @@ from . import serializers
 
 
 class UserViewSet(viewsets.ModelViewSet):
-    serializer_class = serializers.UserSerializer
-    # permission_classes = (permissions.IsAdmin, )
-    # filter_backends = (filters.SearchFilter, )
-    # search_fields = ('=username', )
-    # lookup_field = 'username'
     queryset = User.objects.all()
+    serializer_class = serializers.UserSerializer
+    pagination_class = PageNumberPagination
+    permission_classes = (IsAuthenticated, )
 
     @action(
         methods=('GET', ),
         detail=False,
         permission_classes=(IsAuthenticated, )
     )
-    def me(self, request, *args, **kwargs):
+    def me(self, request):
         serializer = self.get_serializer(request.user)
         return Response(
             data=serializer.data,
@@ -44,8 +44,7 @@ class UserViewSet(viewsets.ModelViewSet):
 
     @action(
         methods=('POST', ),
-        detail=False,
-        permission_classes=(IsAuthenticated, )
+        detail=False
     )
     def set_password(self, request):
         serializer = serializers.PasswordSerializer(data=request.data)
@@ -63,7 +62,6 @@ class UserViewSet(viewsets.ModelViewSet):
     @action(
         detail=True,
         methods=['POST', 'DELETE'],
-        permission_classes=(IsAuthenticated,),
         serializer_class=serializers.UserSerializer
     )
     def subscribe(self, request, pk):
@@ -97,8 +95,7 @@ class UserViewSet(viewsets.ModelViewSet):
 
     @action(
         detail=False,
-        methods=['GET', ],
-        permission_classes=(IsAuthenticated,)
+        methods=['GET', ]
     )
     def subscriptions(self, request):
         user = request.user
@@ -106,7 +103,7 @@ class UserViewSet(viewsets.ModelViewSet):
         serializer = serializers.SubscriptionSerializer(
             queryset,
             many=True,
-            context={'request': request}  # ????
+            context={'request': request}
         )
         return Response(
             serializer.data,
@@ -118,7 +115,10 @@ class RecipeViewSet(viewsets.ModelViewSet):
     queryset = Recipe.objects.all()
     serializer_class = serializers.RecipeSerializer
     permission_classes = (IsAuthenticatedOrReadOnly, )
-    # pagination_class = LimitOffsetPagination
+    pagination_class = PageNumberPagination
+    filter_backends = (DjangoFilterBackend, filters.OrderingFilter)
+    filterset_fields = ('tags',)
+    ordering = ('-pub_date',)
 
     def perform_create(self, serializer):
         serializer.save(author=self.request.user)
@@ -145,7 +145,7 @@ class RecipeViewSet(viewsets.ModelViewSet):
             cart = get_object_or_404(Cart, recipe_id=pk)
             cart.delete()
             return Response(status=status.HTTP_200_OK)
-    
+
     @action(
         detail=False,
         methods=['GET', ],
@@ -219,6 +219,8 @@ class IngredientViewSet(viewsets.ModelViewSet):
     queryset = Ingredient.objects.all()
     serializer_class = serializers.IngredientSerializer
     permission_classes = (IsAuthenticated, )
+    filter_backends = (filters.SearchFilter,)
+    search_fields = ('^name',)
 
 
 class TagViewSet(viewsets.ModelViewSet):

@@ -1,6 +1,3 @@
-import base64
-
-from django.core.files.base import ContentFile
 from django.shortcuts import get_object_or_404
 
 from drf_extra_fields.fields import Base64ImageField
@@ -25,8 +22,8 @@ class UserSerializer(serializers.ModelSerializer):
         if user.is_anonymous or (user == obj):
             return False
         return Subscription.objects.filter(
-            user=obj.user,
-            author=obj.author
+            user=user,
+            author=obj
         ).exists()
 
     def create(self, validated_data):

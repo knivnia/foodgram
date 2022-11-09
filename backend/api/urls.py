@@ -12,12 +12,6 @@ router.register(r'recipes', views.RecipeViewSet)
 router.register(r'ingredients', views.IngredientViewSet)
 router.register(r'tags', views.TagViewSet)
 
-# router.register(
-#     r'posts/(?P<post_id>.+)/comments',
-#     views.CommentViewSet,
-#     basename='Comment')
-# router.register(r'follow', views.FollowViewSet, basename='Follow')
-
 urlpatterns = [
     path('', include(router.urls)),
     path('auth/', include('djoser.urls')),

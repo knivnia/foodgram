@@ -35,6 +35,7 @@ INSTALLED_APPS = [
     'rest_framework',
     'rest_framework.authtoken',
     'djoser',
+    'django_filters',
     'corsheaders',
 ]
 
@@ -50,8 +51,6 @@ MIDDLEWARE = [
 ]
 
 ROOT_URLCONF = 'foodgram.urls'
-
-TEMPLATES_DIR = '/Users/kseniianivnia/Dev/foodgram-project-react/frontend'  # !!!!!??????
 
 TEMPLATES = [
     {
@@ -153,19 +152,10 @@ REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
         'rest_framework.authentication.TokenAuthentication',
     ],
+    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
+    'PAGE_SIZE': 6,
 }
 
 DJOSER = {
     'LOGIN_FIELD': 'email',
-    # 'SERIALIZERS': {
-    #     'user': 'api.serializers.UserSerializer',
-    #     'user_list': 'api.serializers.UserSerializer',
-    #     'current_user': 'api.serializers.UserSerializer',
-    #     'user_create': 'api.serializers.UserSerializer',
-    # },
-    'PERMISSIONS': {
-        # 'user': 'rest_framework.permissions.IsAuthenticated',
-        # 'user_list': 'rest_framework.permissions.AllowAny',
-        # 'set_password': 'djoser.permissions.IsAuthenticated',
-    }
 }

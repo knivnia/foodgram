@@ -20,6 +20,9 @@ class Tag(models.Model):
         unique=True,
         max_length=20)
 
+    class Meta:
+        ordering = ['id']
+
     def __str__(self):
         return self.name
 
