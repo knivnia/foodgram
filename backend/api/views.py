@@ -1,63 +1,26 @@
-from reportlab.pdfbase import pdfmetrics
-from reportlab.pdfbase.ttfonts import TTFont
-from reportlab.pdfgen import canvas
-
-from django_filters.rest_framework import DjangoFilterBackend
-from django.shortcuts import get_object_or_404
 from django.http import HttpResponse
+from django.shortcuts import get_object_or_404
+from django_filters.rest_framework import DjangoFilterBackend
 
-from rest_framework import filters, viewsets, status
+from rest_framework import filters, status, viewsets
 from rest_framework.decorators import action
 from rest_framework.pagination import PageNumberPagination
 from rest_framework.permissions import (IsAuthenticated,
                                         IsAuthenticatedOrReadOnly)
 from rest_framework.response import Response
 
-from recipes.models import (Cart,
-                            Favorite,
-                            Ingredient,
-                            Recipe,
-                            RecipeIngredients,
-                            Subscription,
-                            Tag,
-                            User)
+from recipes.models import (Cart, Favorite, Ingredient, Recipe,
+                            RecipeIngredients, Subscription, Tag)
+from users.models import User
 from . import serializers
+from .scripts import http2pdf
 
 
 class UserViewSet(viewsets.ModelViewSet):
     queryset = User.objects.all()
     serializer_class = serializers.UserSerializer
     pagination_class = PageNumberPagination
-    permission_classes = (IsAuthenticated, )
-
-    @action(
-        methods=('GET', ),
-        detail=False,
-        permission_classes=(IsAuthenticated, )
-    )
-    def me(self, request):
-        serializer = self.get_serializer(request.user)
-        return Response(
-            data=serializer.data,
-            status=status.HTTP_200_OK
-        )
-
-    @action(
-        methods=('POST', ),
-        detail=False
-    )
-    def set_password(self, request):
-        serializer = serializers.PasswordSerializer(data=request.data)
-        if serializer.is_valid():
-            if not request.user.check_password(
-                    serializer.data.get('current_password')):
-                return Response({'current_password': ['Wrong password!']},
-                                status=status.HTTP_400_BAD_REQUEST)
-            request.user.set_password(serializer.data.get('new_password'))
-            request.user.save()
-            return Response(status=status.HTTP_200_OK)
-        return Response(serializer.errors,
-                        status=status.HTTP_400_BAD_REQUEST)
+    # permission_classes = (IsAuthenticated, )
 
     @action(
         detail=True,
@@ -67,16 +30,6 @@ class UserViewSet(viewsets.ModelViewSet):
     def subscribe(self, request, pk):
         if request.method == 'POST':
             author = get_object_or_404(User, id=pk)
-            if request.user == author:
-                return Response({
-                    'errors': 'Selfsubscription!'
-                }, status=status.HTTP_400_BAD_REQUEST)
-            if Subscription.objects.filter(
-                    user=request.user,
-                    author=author).exists():
-                return Response(
-                    'Already subscribed!',
-                    status=status.HTTP_400_BAD_REQUEST)
             subscription = Subscription.objects.create(
                 user=request.user,
                 author=author
@@ -95,11 +48,11 @@ class UserViewSet(viewsets.ModelViewSet):
 
     @action(
         detail=False,
-        methods=['GET', ]
+        methods=['GET', ],
+        permission_classes=(IsAuthenticated, )
     )
     def subscriptions(self, request):
-        user = request.user
-        queryset = Subscription.objects.filter(user=user)
+        queryset = request.user.subsriber.objects.all()
         serializer = serializers.SubscriptionSerializer(
             queryset,
             many=True,
@@ -166,22 +119,10 @@ class RecipeViewSet(viewsets.ModelViewSet):
                 }
             else:
                 final_list[name]['amount'] += item[2]
-        pdfmetrics.registerFont(
-            TTFont('Georgia', 'Georgia.ttf', 'UTF-8'))
         response = HttpResponse(content_type='application/pdf')
         response['Content-Disposition'] = ('attachment; '
                                            'filename="shopping_list.pdf"')
-        page = canvas.Canvas(response)
-        page.setFont('Georgia', size=24)
-        page.drawString(200, 800, 'Shopping list')
-        page.setFont('Georgia', size=16)
-        height = 750
-        for i, (name, data) in enumerate(final_list.items(), 1):
-            page.drawString(75, height, (f'{i}. {name} - {data["amount"]}, '
-                                         f'{data["measurement_unit"]}'))
-            height -= 25
-        page.showPage()
-        page.save()
+        http2pdf(response, final_list)
         return response
 
     @action(

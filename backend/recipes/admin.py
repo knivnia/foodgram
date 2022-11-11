@@ -55,6 +55,7 @@ class TagAdmin(admin.ModelAdmin):
     list_display = (
         'name',
         'color',
+        'color_display',
         'slug',
     )
 

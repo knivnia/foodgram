@@ -12,13 +12,12 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # See https://docs.djangoproject.com/en/2.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'on--c$-(r4^=h_i)2(*_rwq^hgbxl^mqw*z&bbu$6n(#47z2ii'
+SECRET_KEY = os.getenv('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = os.getenv('DEBUG')
 
-ALLOWED_HOSTS = ['*']
-
+ALLOWED_HOSTS = [os.getenv('ALLOWED_HOSTS'), ]
 
 # Application definition
 
@@ -37,6 +36,7 @@ INSTALLED_APPS = [
     'djoser',
     'django_filters',
     'corsheaders',
+    'colorfield'
 ]
 
 MIDDLEWARE = [
@@ -158,4 +158,10 @@ REST_FRAMEWORK = {
 
 DJOSER = {
     'LOGIN_FIELD': 'email',
+    # 'SERIALIZERS': {
+    #     'user': 'api.serializers.UserSerializer',
+    #     'current_user': 'api.serializers.UserSerializer',
+    # }
 }
+
+AUTH_USER_MODEL = 'users.User'

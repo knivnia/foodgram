@@ -1,30 +1,26 @@
-from django.contrib.auth import get_user_model
+from django.contrib.auth.models import AbstractUser
 from django.db import models
 
-User = get_user_model()
+from .validators import UsernameValidator
 
 
-class Follow(models.Model):
-    user = models.ForeignKey(
-        User,
-        on_delete=models.CASCADE,
-        related_name='follower',
-        verbose_name='Follower'
+class User(AbstractUser):
+    username = models.CharField(
+        max_length=150,
+        unique=True,
+        validators=[UsernameValidator('me'), ]
     )
-    author = models.ForeignKey(
-        User,
-        on_delete=models.CASCADE,
-        related_name='following'
-    )
+    email = models.EmailField(
+        unique=True,
+        null=False,
+        blank=False)
+
+    USERNAME_FIELD = 'email'
+    REQUIRED_FIELDS = [
+        'username',
+        'first_name',
+        'last_name'
+    ]
 
     class Meta:
-        constraints = [
-            models.UniqueConstraint(
-                fields=['user', 'author'],
-                name='unique following'
-            ),
-            models.CheckConstraint(
-                check=~models.Q(author=models.F('user')),
-                name='check following'
-            )
-        ]
+        ordering = ['id']

@@ -1,5 +1,7 @@
 from django.db import models
+from django.utils.html import format_html
 
+from api.validators import hex_code_validator
 from users.models import User
 
 
@@ -10,15 +12,23 @@ class Tag(models.Model):
         unique=True,
         max_length=50)
     color = models.CharField(
+        default='#0000ff',
         verbose_name='Color code',
         help_text='Choose color HEX-code ',
         unique=True,
-        max_length=50)
+        max_length=7,
+        validators=[hex_code_validator, ])
     slug = models.SlugField(
         verbose_name='Tag slug',
         help_text='Type unique tag slug',
         unique=True,
         max_length=20)
+
+    def color_display(self):
+        return format_html(
+            f'<span style="background: {self.color};'
+            f'color: {self.color}";>____</span>'
+        )
 
     class Meta:
         ordering = ['id']
@@ -51,6 +61,7 @@ class Recipe(models.Model):
         verbose_name='Recipe'
     )
     name = models.CharField(
+        unique=True,
         verbose_name='Recipe name',
         help_text='Recipe name',
         max_length=50)
@@ -68,12 +79,10 @@ class Recipe(models.Model):
         Ingredient,
         through='RecipeIngredients',
         verbose_name='Ingredients',
-        related_name='recipes',
     )
     tags = models.ManyToManyField(
         Tag,
         verbose_name='Tags',
-        related_name='recipes',
     )
     cooking_time = models.IntegerField(
         verbose_name='Cooking time',
@@ -92,13 +101,12 @@ class RecipeIngredients(models.Model):
     recipe = models.ForeignKey(
         Recipe,
         verbose_name='Recipe',
-        related_name='recipe',
+        related_name='recipeingredients',
         on_delete=models.CASCADE
     )
     ingredients = models.ForeignKey(
         Ingredient,
         verbose_name='Ingredient',
-        related_name='ingredient',
         on_delete=models.CASCADE
     )
     amount = models.PositiveSmallIntegerField(
@@ -162,7 +170,6 @@ class Cart(models.Model):
     user = models.ForeignKey(
         User,
         verbose_name='User',
-        related_name='cart',
         on_delete=models.CASCADE
     )
     recipe = models.ForeignKey(
