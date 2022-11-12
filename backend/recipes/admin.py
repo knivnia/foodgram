@@ -1,4 +1,5 @@
 from django.contrib import admin
+from django.utils.html import format_html
 
 from .models import (
     Cart,
@@ -54,10 +55,15 @@ class RecipeIngredientsAdmin(admin.ModelAdmin):
 class TagAdmin(admin.ModelAdmin):
     list_display = (
         'name',
-        'color',
         'color_display',
         'slug',
     )
+
+    def color_display(self, obj):
+        return format_html(
+            f'<span style="background: {obj.color};'
+            f'color: {obj.color}";>____</span>'
+        )
 
 
 @admin.register(Favorite)

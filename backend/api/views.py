@@ -13,7 +13,7 @@ from recipes.models import (Cart, Favorite, Ingredient, Recipe,
                             RecipeIngredients, Subscription, Tag)
 from users.models import User
 from . import serializers
-from .scripts import http2pdf
+from .utils import http2pdf
 
 
 class UserViewSet(viewsets.ModelViewSet):

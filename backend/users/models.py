@@ -11,6 +11,7 @@ class User(AbstractUser):
         validators=[UsernameValidator('me'), ]
     )
     email = models.EmailField(
+        max_length=254,
         unique=True,
         null=False,
         blank=False)
@@ -23,4 +24,4 @@ class User(AbstractUser):
     ]
 
     class Meta:
-        ordering = ['id']
+        ordering = ('id', )

@@ -1,5 +1,4 @@
 from django.db import models
-from django.utils.html import format_html
 
 from api.validators import hex_code_validator
 from users.models import User
@@ -23,12 +22,6 @@ class Tag(models.Model):
         help_text='Type unique tag slug',
         unique=True,
         max_length=20)
-
-    def color_display(self):
-        return format_html(
-            f'<span style="background: {self.color};'
-            f'color: {self.color}";>____</span>'
-        )
 
     class Meta:
         ordering = ['id']
@@ -83,6 +76,7 @@ class Recipe(models.Model):
     tags = models.ManyToManyField(
         Tag,
         verbose_name='Tags',
+        related_name='+',
     )
     cooking_time = models.IntegerField(
         verbose_name='Cooking time',
@@ -107,6 +101,7 @@ class RecipeIngredients(models.Model):
     ingredients = models.ForeignKey(
         Ingredient,
         verbose_name='Ingredient',
+        related_name='+',
         on_delete=models.CASCADE
     )
     amount = models.PositiveSmallIntegerField(
