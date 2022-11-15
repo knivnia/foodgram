@@ -68,11 +68,6 @@ class Recipe(models.Model):
         verbose_name='Text',
         help_text='Type your recipe'
     )
-    ingredients = models.ManyToManyField(
-        Ingredient,
-        through='RecipeIngredients',
-        verbose_name='Ingredients',
-    )
     tags = models.ManyToManyField(
         Tag,
         verbose_name='Tags',

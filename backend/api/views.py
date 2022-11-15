@@ -25,7 +25,6 @@ class UserViewSet(viewsets.ModelViewSet):
     @action(
         detail=True,
         methods=['POST', 'DELETE'],
-        serializer_class=serializers.UserSerializer
     )
     def subscribe(self, request, pk):
         if request.method == 'POST':
@@ -48,8 +47,7 @@ class UserViewSet(viewsets.ModelViewSet):
 
     @action(
         detail=False,
-        methods=['GET', ],
-        permission_classes=(IsAuthenticated, )
+        methods=['GET'],
     )
     def subscriptions(self, request):
         queryset = request.user.subsriber.objects.all()
