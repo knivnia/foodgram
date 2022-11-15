@@ -182,7 +182,7 @@ class SubscriptionSerializer(serializers.ModelSerializer):
                 user_id=self.request.user.id,
                 author_id=pk).exists():
             raise serializers.ValidationError(
-                    'Already subscribed!')
+                'Already subscribed!')
         return data
 
     class Meta:
