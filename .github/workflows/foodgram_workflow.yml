@@ -67,8 +67,9 @@ jobs:
           script: |
             cd foodgram/
             sudo docker-compose stop
-            sudo docker rmi -f $(sudo docker images ${{ secrets.DOCKER_USERNAME }}/foodgram_backend:latest -a -q)
-            sudo docker rmi -f $(sudo docker images ${{ secrets.DOCKER_USERNAME }}/foodgram_frontend:latest -a -q)
+            sudo docker-compose down -v
+            sudo docker rmi ${{ secrets.DOCKER_USERNAME }}/foodgram_backend:latest
+            sudo docker rmi ${{ secrets.DOCKER_USERNAME }}/foodgram_frontend:latest
             sudo docker pull ${{ secrets.DOCKER_USERNAME }}/foodgram_backend:latest
             sudo docker pull ${{ secrets.DOCKER_USERNAME }}/foodgram_frontend:latest
             touch .env
