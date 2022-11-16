@@ -95,6 +95,6 @@ jobs:
         message: |
           ${{ github.workflow }} run is successful.
           Repository: ${{ github.repository }}
-          Commited by: ${{ github.actor }},
+          Commited by ${{ github.actor }},
           Comment: "${{ github.event.commits[0].message }}" 
           Repository link: https://github.com/${{ github.repository }}/commit/${{ github.sha }}
