@@ -2,7 +2,8 @@ from django.http import HttpResponse
 from django.shortcuts import get_object_or_404
 from django_filters.rest_framework import DjangoFilterBackend
 
-from rest_framework import filters, status, viewsets
+from rest_framework import filters as drf_filters
+from rest_framework import status, viewsets
 from rest_framework.decorators import action
 from rest_framework.pagination import PageNumberPagination
 from rest_framework.permissions import (IsAuthenticated,
@@ -12,11 +13,11 @@ from rest_framework.response import Response
 from recipes.models import (Cart, Favorite, Ingredient, Recipe,
                             RecipeIngredients, Subscription, Tag)
 from users.models import User
-from . import serializers
+from . import filters, serializers
 from .utils import http2pdf
 
 
-class UserViewSet(viewsets.ModelViewSet):
+class UserViewSet(viewsets.GenericViewSet):
     queryset = User.objects.all()
     serializer_class = serializers.UserSerializer
     pagination_class = PageNumberPagination
@@ -67,8 +68,13 @@ class RecipeViewSet(viewsets.ModelViewSet):
     serializer_class = serializers.RecipeSerializer
     permission_classes = (IsAuthenticatedOrReadOnly, )
     pagination_class = PageNumberPagination
-    filter_backends = (DjangoFilterBackend, filters.OrderingFilter)
+    filter_backends = (DjangoFilterBackend, drf_filters.OrderingFilter)
+    filterset_class = filters.RecipeFilter
     filterset_fields = ('tags',)
+    filterset_fields = [
+        'tags',
+        'author'
+    ]
     ordering = ('-pub_date',)
 
     def perform_create(self, serializer):
@@ -157,12 +163,14 @@ class RecipeIngredientsViewSet(viewsets.ModelViewSet):
 class IngredientViewSet(viewsets.ModelViewSet):
     queryset = Ingredient.objects.all()
     serializer_class = serializers.IngredientSerializer
-    permission_classes = (IsAuthenticated, )
-    filter_backends = (filters.SearchFilter,)
+    filter_backends = (DjangoFilterBackend, drf_filters.OrderingFilter)
+    filterset_class = filters.IngredientSearchFilter
+    filterset_fields = ('name',)
     search_fields = ('^name',)
+    ordering = ('id',)
 
 
 class TagViewSet(viewsets.ModelViewSet):
     queryset = Tag.objects.all()
     serializer_class = serializers.TagSerializer
-    permission_classes = (IsAuthenticated, )
+    # permission_classes = (IsAuthenticated, )

@@ -4,8 +4,7 @@ from reportlab.pdfgen import canvas
 
 
 def http2pdf(response, list):
-    pdfmetrics.registerFont(
-        TTFont('Georgia', 'Georgia.ttf', 'UTF-8'))
+    pdfmetrics.registerFont(TTFont('Georgia', 'Georgia.ttf', 'UTF-8'))
     page = canvas.Canvas(response)
     page.setFont('Georgia', size=24)
     page.drawString(200, 800, 'Shopping list')
