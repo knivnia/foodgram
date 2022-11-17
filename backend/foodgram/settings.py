@@ -129,7 +129,7 @@ USE_L10N = True
 
 STATIC_URL = '/static/'
 STATICFILES_DIRS = (os.path.join(BASE_DIR, 'static'),)
-STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+STATIC_ROOT = os.path.join(BASE_DIR, 'static/')
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
@@ -166,4 +166,4 @@ DJOSER = {
 
 AUTH_USER_MODEL = 'users.User'
 
-CSRF_TRUSTED_ORIGINS = ['http://51.250.85.169', 'https://*.127.0.0.1']
+CSRF_TRUSTED_ORIGINS = ['http://158.160.41.135', 'https://*.127.0.0.1']
