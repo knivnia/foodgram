@@ -166,4 +166,4 @@ DJOSER = {
 
 AUTH_USER_MODEL = 'users.User'
 
-CSRF_TRUSTED_ORIGINS = ['http://158.160.34.68', 'https://*.127.0.0.1']
+CSRF_TRUSTED_ORIGINS = ['http://51.250.85.169', 'https://*.127.0.0.1']
