@@ -168,9 +168,10 @@ class IngredientViewSet(viewsets.ModelViewSet):
     filterset_fields = ('name',)
     search_fields = ('^name',)
     ordering = ('id',)
+    pagination_class = None
 
 
 class TagViewSet(viewsets.ModelViewSet):
     queryset = Tag.objects.all()
     serializer_class = serializers.TagSerializer
-    # permission_classes = (IsAuthenticated, )
+    pagination_class = None
