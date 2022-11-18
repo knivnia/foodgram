@@ -49,10 +49,6 @@ class IngredientSerializer(serializers.HyperlinkedModelSerializer):
 
 
 class AddIngredientsSerializer(serializers.ModelSerializer):
-#     # id = serializers.PrimaryKeyRelatedField(
-#     #     source='ingredients',
-#     #     queryset=Ingredient.objects.all()
-#     # )
     id = serializers.ReadOnlyField(source='ingredients.id')
 
     def create(self, validated_data):
