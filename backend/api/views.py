@@ -22,6 +22,8 @@ class UserViewSet(viewsets.GenericViewSet):
     queryset = User.objects.all()
     serializer_class = serializers.UserSerializer
     pagination_class = PageNumberPagination
+    filter_backends = (filters.OrderingFilter, )
+    ordering = ('-id',)
 
     @action(
         detail=True,
