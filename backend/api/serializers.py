@@ -2,7 +2,6 @@ from django.shortcuts import get_object_or_404
 
 from drf_extra_fields.fields import Base64ImageField
 from rest_framework import serializers
-from rest_framework.relations import SlugRelatedField
 from recipes.models import (Cart, Favorite, Ingredient, Recipe,
                             RecipeIngredients, Subscription, Tag)
 from users.models import User
@@ -80,7 +79,6 @@ class RecipeSerializer(serializers.ModelSerializer):
     is_in_shopping_cart = serializers.SerializerMethodField(read_only=True)
     image = Base64ImageField(required=True, allow_null=False)
     ingredients = serializers.SerializerMethodField()
-    # ingredients = AddIngredientsSerializer(read_only=True)
     tags = TagSerializer(read_only=True, many=True)
 
     def get_is_favorited(self, obj):
@@ -113,7 +111,6 @@ class RecipeSerializer(serializers.ModelSerializer):
         recipe = Recipe.objects.create(**validated_data)
         recipe.tags.set(tags_data)
         self.add_ingredients(ingredients_data, recipe)
-        print(f'!!!!INGR    {ingredients_data}')
         return recipe
 
     def update(self, instance, validated_data):

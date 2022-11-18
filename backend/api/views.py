@@ -22,7 +22,6 @@ class UserViewSet(viewsets.GenericViewSet):
     queryset = User.objects.all()
     serializer_class = serializers.UserSerializer
     pagination_class = PageNumberPagination
-    # permission_classes = (IsAuthenticated, )
 
     @action(
         detail=True,
@@ -70,12 +69,6 @@ class RecipeViewSet(viewsets.ModelViewSet):
     pagination_class = PageNumberPagination
     filter_backends = (DjangoFilterBackend, filters.OrderingFilter)
     filterset_class = RecipeFilter
-    # filterset_fields = [
-    #     'tags',
-    #     'author',
-    #     'is_favorited',
-    #     'is_in_shopping_cart'
-    # ]
     ordering = ('-pub_date',)
 
     def perform_create(self, serializer):
@@ -137,7 +130,6 @@ class RecipeViewSet(viewsets.ModelViewSet):
     )
     def favorite(self, request, pk):
         if request.method == 'POST':
-            print('!!!!fav create@!!!')
             if Favorite.objects.filter(
                     user=request.user,
                     recipe_id=pk).exists():
