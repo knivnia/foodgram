@@ -2,7 +2,7 @@ from django.http import HttpResponse
 from django.shortcuts import get_object_or_404
 from django_filters.rest_framework import DjangoFilterBackend
 
-from rest_framework import filters as drf_filters
+from rest_framework import filters
 from rest_framework import status, viewsets
 from rest_framework.decorators import action
 from rest_framework.pagination import PageNumberPagination
@@ -13,8 +13,9 @@ from rest_framework.response import Response
 from recipes.models import (Cart, Favorite, Ingredient, Recipe,
                             RecipeIngredients, Subscription, Tag)
 from users.models import User
-from . import filters, serializers
+from . import serializers
 from .utils import http2pdf
+from .filters import IngredientSearchFilter, RecipeFilter
 
 
 class UserViewSet(viewsets.GenericViewSet):
@@ -49,18 +50,17 @@ class UserViewSet(viewsets.GenericViewSet):
     @action(
         detail=False,
         methods=['GET'],
+        pagination_class=PageNumberPagination
     )
     def subscriptions(self, request):
-        queryset = request.user.subsriber.objects.all()
+        page = self.paginate_queryset(
+            Subscription.objects.filter(user=request.user))
         serializer = serializers.SubscriptionSerializer(
-            queryset,
+            page,
             many=True,
             context={'request': request}
         )
-        return Response(
-            serializer.data,
-            status=status.HTTP_200_OK
-        )
+        return self.get_paginated_response(serializer.data)
 
 
 class RecipeViewSet(viewsets.ModelViewSet):
@@ -68,13 +68,14 @@ class RecipeViewSet(viewsets.ModelViewSet):
     serializer_class = serializers.RecipeSerializer
     permission_classes = (IsAuthenticatedOrReadOnly, )
     pagination_class = PageNumberPagination
-    filter_backends = (DjangoFilterBackend, drf_filters.OrderingFilter)
-    filterset_class = filters.RecipeFilter
-    filterset_fields = ('tags',)
-    filterset_fields = [
-        'tags',
-        'author'
-    ]
+    filter_backends = (DjangoFilterBackend, filters.OrderingFilter)
+    filterset_class = RecipeFilter
+    # filterset_fields = [
+    #     'tags',
+    #     'author',
+    #     'is_favorited',
+    #     'is_in_shopping_cart'
+    # ]
     ordering = ('-pub_date',)
 
     def perform_create(self, serializer):
@@ -136,6 +137,7 @@ class RecipeViewSet(viewsets.ModelViewSet):
     )
     def favorite(self, request, pk):
         if request.method == 'POST':
+            print('!!!!fav create@!!!')
             if Favorite.objects.filter(
                     user=request.user,
                     recipe_id=pk).exists():
@@ -145,7 +147,7 @@ class RecipeViewSet(viewsets.ModelViewSet):
             recipe = get_object_or_404(Recipe, id=pk)
             Favorite.objects.create(
                 user=request.user,
-                recipe=recipe
+                recipe_id=pk
             )
             serializer = serializers.ShortRecipeSerializer(recipe)
             return Response(serializer.data, status=status.HTTP_200_OK)
@@ -163,8 +165,8 @@ class RecipeIngredientsViewSet(viewsets.ModelViewSet):
 class IngredientViewSet(viewsets.ModelViewSet):
     queryset = Ingredient.objects.all()
     serializer_class = serializers.IngredientSerializer
-    filter_backends = (DjangoFilterBackend, drf_filters.OrderingFilter)
-    filterset_class = filters.IngredientSearchFilter
+    filter_backends = (DjangoFilterBackend, filters.OrderingFilter)
+    filterset_class = IngredientSearchFilter
     filterset_fields = ('name',)
     search_fields = ('^name',)
     ordering = ('id',)

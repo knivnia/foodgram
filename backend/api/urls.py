@@ -11,6 +11,9 @@ router.register('ingredients', views.IngredientViewSet)
 router.register('tags', views.TagViewSet)
 
 urlpatterns = [
+    path('users/subscriptions/', views.UserViewSet.as_view(
+        {'get': 'subscriptions'})
+    ),
     path('auth/', include('djoser.urls.authtoken')),
     path('', include('djoser.urls')),
     path('', include(router.urls)),

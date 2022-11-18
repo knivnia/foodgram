@@ -44,6 +44,15 @@ class IngredientSerializer(serializers.HyperlinkedModelSerializer):
         model = Ingredient
 
 
+class AddIngredientsSerializer(serializers.ModelSerializer):
+    id = serializers.PrimaryKeyRelatedField(queryset=Ingredient.objects.all())
+    amount = serializers.IntegerField()
+
+    class Meta:
+        model = RecipeIngredients
+        fields = ('id', 'amount')
+
+
 class RecipeIngredientsSerializer(serializers.HyperlinkedModelSerializer):
     id = serializers.ReadOnlyField(source='ingredients.id')
     name = serializers.ReadOnlyField(source='ingredients.name')
@@ -57,20 +66,19 @@ class RecipeIngredientsSerializer(serializers.HyperlinkedModelSerializer):
 
 
 class RecipeSerializer(serializers.HyperlinkedModelSerializer):
-    author = SlugRelatedField(
-        read_only=True, slug_field='username'
-    )
-    is_favorite = serializers.SerializerMethodField()
-    is_in_shopping_cart = serializers.SerializerMethodField()
+    author = UserSerializer(read_only=True)
+    is_favorited = serializers.SerializerMethodField(read_only=True)
+    is_in_shopping_cart = serializers.SerializerMethodField(read_only=True)
     image = Base64ImageField(required=True, allow_null=False)
     ingredients = serializers.SerializerMethodField()
+    # ingredients = AddIngredientsSerializer(read_only=True)
     tags = TagSerializer(read_only=True, many=True)
 
-    def get_is_favorite(self, obj):
+    def get_is_favorited(self, obj):
         user = self.context.get('request').user
         if user.is_anonymous:
             return False
-        return Favorite.objects.filter(recipe_id=obj.id).exists()
+        return Favorite.objects.filter(recipe=obj).exists()
 
     def get_is_in_shopping_cart(self, obj):
         user = self.context.get('request').user
@@ -84,14 +92,14 @@ class RecipeSerializer(serializers.HyperlinkedModelSerializer):
 
     def add_ingredients(self, ingredients, recipe):
         for ingredient in ingredients:
+
             RecipeIngredients.objects.create(
                 recipe=recipe,
-                ingredients=get_object_or_404(
-                    Ingredient,
-                    id=ingredient.get('id')
-                ),
+                ingredients_id=ingredient.get('id'),
                 amount=ingredient.get('amount'),
             )
+        # recipe.ingredients.set(ingredients)
+        # print(recipe.ingredients)
 
     def create(self, validated_data):
         tags_data = self.initial_data.get('tags')
@@ -123,7 +131,7 @@ class RecipeSerializer(serializers.HyperlinkedModelSerializer):
             'tags',
             'author',
             'ingredients',
-            'is_favorite',
+            'is_favorited',
             'is_in_shopping_cart',
             'name',
             'image',
@@ -169,7 +177,12 @@ class SubscriptionSerializer(serializers.ModelSerializer):
         ).exists()
 
     def get_recipes(self, obj):
+        request = self.context.get('request')
+        recipes_limit = request.GET.get('recipes_limit')
+        print(f'!!!!rec limit{recipes_limit}!!!!!')
         queryset = Recipe.objects.filter(author=obj.author)
+        if recipes_limit:
+            queryset = queryset[:int(recipes_limit)]
         return ShortRecipeSerializer(queryset, many=True).data
 
     def get_recipes_count(self, obj):
