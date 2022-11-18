@@ -60,7 +60,7 @@ class Recipe(models.Model):
         max_length=50)
     image = models.ImageField(
         verbose_name='Image',
-        upload_to='recipes/',
+        upload_to='recipes/images',
         blank=True,
         help_text='Upload your image'
     )
