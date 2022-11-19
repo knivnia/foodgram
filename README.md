@@ -1,4 +1,4 @@
-![example event parameter](https://github.com/knivnia/
+![foodgram workflow](https://github.com/knivnia/
 foodgram-project-react/actions/workflows/foodgram_workflow.yml/badge.svg?event=push)
 
 # Foodgram
