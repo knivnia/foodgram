@@ -1,5 +1,4 @@
-![foodgram workflow](https://github.com/knivnia/
-foodgram-project-react/actions/workflows/foodgram_workflow.yml/badge.svg?event=push)
+![foodgram workflow](https://github.com/knivnia/foodgram-project-react/actions/workflows/foodgram_workflow.yml/badge.svg?event=push)
 
 # Foodgram
 
