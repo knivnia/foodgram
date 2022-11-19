@@ -77,7 +77,7 @@ class RecipeSerializer(serializers.ModelSerializer):
     author = UserSerializer(read_only=True)
     is_favorited = serializers.SerializerMethodField(read_only=True)
     is_in_shopping_cart = serializers.SerializerMethodField(read_only=True)
-    image = Base64ImageField(required=True, allow_null=False)
+    image = Base64ImageField(required=True, allow_null=False, max_length=None)
     ingredients = serializers.SerializerMethodField()
     tags = TagSerializer(read_only=True, many=True)
 
@@ -108,6 +108,17 @@ class RecipeSerializer(serializers.ModelSerializer):
     def create(self, validated_data):
         tags_data = self.initial_data.get('tags')
         ingredients_data = self.initial_data.get('ingredients')
+        ingredients_list = []
+        for ingredient in ingredients_data:
+            if ingredient.get('id') in ingredients_list:
+                ingredient_name = get_object_or_404(
+                    Ingredient,
+                    id=ingredient.get('id')
+                )
+                raise serializers.ValidationError(
+                    f'Ingredient {ingredient_name} is duplicated!'
+                )
+            ingredients_list.append(ingredient.get('id'))
         recipe = Recipe.objects.create(**validated_data)
         recipe.tags.set(tags_data)
         self.add_ingredients(ingredients_data, recipe)
@@ -146,7 +157,7 @@ class RecipeSerializer(serializers.ModelSerializer):
 
 
 class ShortRecipeSerializer(serializers.HyperlinkedModelSerializer):
-    image = Base64ImageField(required=True, allow_null=False)
+    image = Base64ImageField(required=True, allow_null=False, max_length=None)
 
     class Meta:
         model = Recipe

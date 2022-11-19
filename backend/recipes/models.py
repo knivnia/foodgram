@@ -1,3 +1,4 @@
+from django.core.validators import MinValueValidator
 from django.db import models
 
 from api.validators import hex_code_validator
@@ -78,7 +79,7 @@ class Recipe(models.Model):
         verbose_name='Tags',
         related_name='+',
     )
-    cooking_time = models.IntegerField(
+    cooking_time = models.PositiveIntegerField(
         verbose_name='Cooking time',
         help_text='Enter cooking time for your recipe'
     )
@@ -95,7 +96,7 @@ class RecipeIngredients(models.Model):
     recipe = models.ForeignKey(
         Recipe,
         verbose_name='Recipe',
-        related_name='recipeingredients',
+        related_name='+',
         on_delete=models.CASCADE
     )
     ingredients = models.ForeignKey(
@@ -107,7 +108,13 @@ class RecipeIngredients(models.Model):
     amount = models.PositiveSmallIntegerField(
         verbose_name='Ingredient amount',
         help_text='Add how much of ingredient you need for your recipe',
-        default=0
+        validators=[
+            MinValueValidator(
+                1,
+                message='Amount of ingredient should be more than 0!'
+            )
+        ],
+        default=1
     )
 
 

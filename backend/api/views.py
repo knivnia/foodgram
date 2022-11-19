@@ -41,12 +41,16 @@ class UserViewSet(viewsets.GenericViewSet):
             )
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         if request.method == 'DELETE':
+            author = get_object_or_404(User, id=pk)
             subscription = get_object_or_404(
                 Subscription,
                 user=request.user,
                 author_id=pk)
             subscription.delete()
-            return Response(status=status.HTTP_200_OK)
+            serializer = serializers.SubscriptionSerializer(
+                subscription, context={'request': request}
+            )
+            return Response(serializer.data, status=status.HTTP_200_OK)
 
     @action(
         detail=False,
@@ -95,7 +99,11 @@ class RecipeViewSet(viewsets.ModelViewSet):
             serializer = serializers.ShortRecipeSerializer(recipe)
             return Response(serializer.data, status=status.HTTP_200_OK)
         if request.method == 'DELETE':
-            cart = get_object_or_404(Cart, recipe_id=pk)
+            cart = get_object_or_404(
+                Cart,
+                user=self.request.user,
+                recipe_id=pk
+            )
             cart.delete()
             return Response(status=status.HTTP_200_OK)
 
@@ -146,9 +154,11 @@ class RecipeViewSet(viewsets.ModelViewSet):
             serializer = serializers.ShortRecipeSerializer(recipe)
             return Response(serializer.data, status=status.HTTP_200_OK)
         if request.method == 'DELETE':
+            recipe = get_object_or_404(Recipe, id=pk)
             favorite = get_object_or_404(Favorite, recipe_id=pk)
             favorite.delete()
-            return Response(status=status.HTTP_200_OK)
+            serializer = serializers.ShortRecipeSerializer(recipe)
+            return Response(serializer.data, status=status.HTTP_200_OK)
 
 
 class RecipeIngredientsViewSet(viewsets.ModelViewSet):
