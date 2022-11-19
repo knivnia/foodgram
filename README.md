@@ -1,6 +1,6 @@
 ![foodgram workflow](https://github.com/knivnia/foodgram-project-react/actions/workflows/foodgram_workflow.yml/badge.svg?event=push)
 
-# Foodgram
+# Foodgram project
 
 ### Foodgram - recipe sharing website
 
