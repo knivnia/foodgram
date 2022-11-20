@@ -99,13 +99,15 @@ class RecipeViewSet(viewsets.ModelViewSet):
             serializer = serializers.ShortRecipeSerializer(recipe)
             return Response(serializer.data, status=status.HTTP_200_OK)
         if request.method == 'DELETE':
+            recipe = get_object_or_404(Recipe, id=pk)
             cart = get_object_or_404(
                 Cart,
                 user=self.request.user,
                 recipe_id=pk
             )
             cart.delete()
-            return Response(status=status.HTTP_200_OK)
+            serializer = serializers.ShortRecipeSerializer(recipe)
+            return Response(serializer.data, status=status.HTTP_200_OK)
 
     @action(
         detail=False,

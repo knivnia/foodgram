@@ -77,7 +77,7 @@ class RecipeSerializer(serializers.ModelSerializer):
     author = UserSerializer(read_only=True)
     is_favorited = serializers.SerializerMethodField(read_only=True)
     is_in_shopping_cart = serializers.SerializerMethodField(read_only=True)
-    image = Base64ImageField(required=True, allow_null=False, max_length=None)
+    image = Base64ImageField(required=True, allow_null=False)
     ingredients = serializers.SerializerMethodField()
     tags = TagSerializer(read_only=True, many=True)
 
@@ -156,8 +156,7 @@ class RecipeSerializer(serializers.ModelSerializer):
         model = Recipe
 
 
-class ShortRecipeSerializer(serializers.HyperlinkedModelSerializer):
-    image = Base64ImageField(required=True, allow_null=False, max_length=None)
+class ShortRecipeSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Recipe
