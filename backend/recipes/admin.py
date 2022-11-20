@@ -20,6 +20,11 @@ class IngredientAdmin(admin.ModelAdmin):
     list_filter = ('name',)
 
 
+class IngredientInline(admin.TabularInline):
+    model = RecipeIngredients
+    min_num = 1
+
+
 @admin.register(Recipe)
 class RecipeAdmin(admin.ModelAdmin):
     list_display = (
@@ -36,6 +41,7 @@ class RecipeAdmin(admin.ModelAdmin):
         'author',
         'tags',
     )
+    inlines = (IngredientInline,)
 
     def get_favorites(self, obj):
         return obj.favorites.count()
