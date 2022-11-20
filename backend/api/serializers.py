@@ -119,6 +119,10 @@ class RecipeSerializer(serializers.ModelSerializer):
                     f'Ingredient {ingredient_name} is duplicated!'
                 )
             ingredients_list.append(ingredient.get('id'))
+        if len(ingredients_list) == 0:
+            raise serializers.ValidationError(
+                'Add at least one ingredient!'
+            )
         recipe = Recipe.objects.create(**validated_data)
         recipe.tags.set(tags_data)
         self.add_ingredients(ingredients_data, recipe)
@@ -141,6 +145,7 @@ class RecipeSerializer(serializers.ModelSerializer):
         return recipe
 
     class Meta:
+        model = Recipe
         fields = (
             'id',
             'tags',
@@ -153,7 +158,6 @@ class RecipeSerializer(serializers.ModelSerializer):
             'text',
             'cooking_time'
         )
-        model = Recipe
 
 
 class ShortRecipeSerializer(serializers.ModelSerializer):

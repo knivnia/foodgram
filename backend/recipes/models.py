@@ -72,7 +72,7 @@ class Recipe(models.Model):
     ingredients = models.ManyToManyField(
         Ingredient,
         through='RecipeIngredients',
-        verbose_name='Ingredients',
+        verbose_name='Ingredients'
     )
     tags = models.ManyToManyField(
         Tag,
@@ -81,7 +81,8 @@ class Recipe(models.Model):
     )
     cooking_time = models.PositiveIntegerField(
         verbose_name='Cooking time',
-        help_text='Enter cooking time for your recipe'
+        help_text='Enter cooking time for your recipe',
+        validators=[MinValueValidator(1), ]
     )
     pub_date = models.DateTimeField(
         verbose_name='Publication date',
