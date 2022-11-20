@@ -6,7 +6,7 @@
 
 ##### Description
 
-Service for sharing your favorite recipes, subscribe on other users, add recipes to the favorites and add items to a shopping list
+Service for sharing your favorite recipes, subscribe on other users, add recipes to the favorites and add items to a downloadable shopping list
 
 ##### Technologies
 
@@ -40,9 +40,10 @@ DB_PORT=5432
 
 ```
 docker-compose up -d --build 
-docker-compose exec web python manage.py migrate
-docker-compose exec web python manage.py createsuperuser
-docker-compose exec web python manage.py collectstatic --no-input
+docker-compose exec <container ID> python manage.py migrate
+docker-compose exec <container ID> python manage.py loaddata dump.json
+docker-compose exec <container ID> python manage.py createsuperuser
+docker-compose exec <container ID> python manage.py collectstatic --no-input
 ```
 
 
