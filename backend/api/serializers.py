@@ -110,7 +110,7 @@ class RecipeSerializer(serializers.ModelSerializer):
         ingredients_data = self.initial_data.get('ingredients')
         ingredients_list = []
         for ingredient in ingredients_data:
-            if ingredient.get('amount') <= 0:
+            if int(ingredient.get('amount')) <= 0:
                 ingredient_name = get_object_or_404(
                     Ingredient,
                     id=ingredient.get('id')
