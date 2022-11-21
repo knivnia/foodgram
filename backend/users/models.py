@@ -17,7 +17,7 @@ class User(AbstractUser):
         max_length=150,
         unique=True,
         validators=[
-            UnicodeUsernameValidator,
+            UnicodeUsernameValidator(),
             UsernameValidator('me')
         ]
     )

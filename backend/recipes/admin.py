@@ -48,16 +48,6 @@ class RecipeAdmin(admin.ModelAdmin):
     get_favorites.short_description = 'favorites'
 
 
-@admin.register(RecipeIngredients)
-class RecipeIngredientsAdmin(admin.ModelAdmin):
-    list_display = (
-        'recipe',
-        'ingredients',
-        'amount',
-    )
-    list_filter = ('recipe', 'ingredients')
-
-
 @admin.register(Tag)
 class TagAdmin(admin.ModelAdmin):
     list_display = (
