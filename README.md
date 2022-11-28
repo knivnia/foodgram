@@ -48,10 +48,10 @@ docker-compose exec <container ID> python manage.py collectstatic --no-input
 
 ##### Some pages
 
-<img src="backend/images_for_readme/main.png" width="150" height="280">
+<img src="backend/images_for_readme/main.png" width="1208" height="1448">
 
 
-![recipe page](backend/images_for_readme/recipe.png)
+<img src="backend/images_for_readme/recipe.png" width="1208" height="883">
 
 
 ![shopping list](backend/images_for_readme/shopping_list.png)
