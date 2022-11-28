@@ -48,7 +48,7 @@ docker-compose exec <container ID> python manage.py collectstatic --no-input
 
 ##### Some pages
 
-<img src="backend/images_for_readme/main.png" width="1208" height="1448">
+<img src="backend/images_for_readme/main.png" width="1000" height="1120">
 
 
 <img src="backend/images_for_readme/recipe.png" width="1208" height="883">
