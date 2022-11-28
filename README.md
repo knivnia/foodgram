@@ -47,20 +47,22 @@ docker-compose exec <container ID> python manage.py collectstatic --no-input
 ```
 
 #### Some pages
-________
+
+
 <img align="center" src="backend/images_for_readme/main.png" width="900" height="1002">
 
-________
+
 <img align="center" src="backend/images_for_readme/recipe.png" width="900" height="640">
 
-________
+
 <img align="center" src="backend/images_for_readme/shopping_list.png" width="450" height="440">
 
-________
+
 <img align="center" src="backend/images_for_readme/subscriptions.png" width="278" height="496">
 
 
-________
+
+
 #### Author (backend)
 Kseniia Nivnia
 
