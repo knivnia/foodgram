@@ -46,8 +46,18 @@ docker-compose exec <container ID> python manage.py createsuperuser
 docker-compose exec <container ID> python manage.py collectstatic --no-input
 ```
 
+##### Some pages
 
-#### Author
+[main page](backend/images_for_readme/main.png)
+
+[recipe page](backend/images_for_readme/recipe.png)
+
+[shopping list](backend/images_for_readme/shopping_list.png)
+
+[subscriptions](backend/images_for_readme/subscriptions.png)
+
+
+#### Author (backend)
 Kseniia Nivnia
 
 November 2022
