@@ -51,7 +51,7 @@ docker-compose exec <container ID> python manage.py collectstatic --no-input
 <img src="backend/images_for_readme/main.png" width="1000" height="1120">
 
 
-<img src="backend/images_for_readme/recipe.png" width="1208" height="883">
+<img src="backend/images_for_readme/recipe.png" width="1000" height="730">
 
 
 ![shopping list](backend/images_for_readme/shopping_list.png)
