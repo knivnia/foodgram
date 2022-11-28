@@ -58,10 +58,7 @@ docker-compose exec <container ID> python manage.py collectstatic --no-input
 
 
 
-<img src="backend/images_for_readme/shopping_list.png" width="450" height="440">
-
-
-![subscriptions](backend/images_for_readme/subscriptions.png)
+<img src="backend/images_for_readme/shopping_list.png" width="450" height="440">      <img src="backend/images_for_readme/subscriptions.png" width="278" height="496">
 
 
 #### Author (backend)
