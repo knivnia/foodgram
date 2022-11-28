@@ -48,13 +48,13 @@ docker-compose exec <container ID> python manage.py collectstatic --no-input
 
 ##### Some pages
 
-[main page](backend/images_for_readme/main.png)
+![main page](backend/images_for_readme/main.png)
 
-[recipe page](backend/images_for_readme/recipe.png)
+![recipe page](backend/images_for_readme/recipe.png)
 
-[shopping list](backend/images_for_readme/shopping_list.png)
+![shopping list](backend/images_for_readme/shopping_list.png)
 
-[subscriptions](backend/images_for_readme/subscriptions.png)
+![subscriptions](backend/images_for_readme/subscriptions.png)
 
 
 #### Author (backend)
