@@ -4,7 +4,7 @@ import { useState, useContext } from 'react'
 import { AuthContext } from '../../contexts'
 
 const Card = ({
-  name = 'Без названия',
+  name = 'No title',
   id,
   image,
   is_favorited,
@@ -55,7 +55,7 @@ const Card = ({
             }}
             disabled={!authContext}
           >
-            {is_in_shopping_cart ? <><Icons.DoneIcon />Рецепт добавлен</> : <><Icons.PlusIcon fill='#4A61DD' /> Добавить в покупки</>}
+            {is_in_shopping_cart ? <><Icons.DoneIcon />Added to cart</> : <><Icons.PlusIcon fill='#4A61DD' /> Add to cart</>}
           </Button>}
           
           {authContext && <Button
