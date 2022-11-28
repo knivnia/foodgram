@@ -2,7 +2,7 @@
 
 # Foodgram project
 
-### Foodgram - recipe sharing website
+### [Foodgram](http://158.160.41.135/recipes) - recipe sharing website
 
 #### Description
 
