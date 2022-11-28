@@ -257,7 +257,7 @@ const RecipeEdit = ({ onItemDelete }) => {
             }}
             value={recipeTime}
           />
-          <div className={styles.cookingTimeUnit}>min</div>
+          <div className={styles.cookingTimeUnit}>mins</div>
         </div>
         <Textarea
           label='Method'

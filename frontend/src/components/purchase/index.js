@@ -17,7 +17,7 @@ const Purchase = ({ image, name, cooking_time, id, handleRemoveFromCart, is_in_s
         <LinkComponent className={styles.recipeLink} title={name} href={`/recipes/${id}`} />
       </h3>
       <p className={styles.purchaseText}>
-        <Icons.ClockIcon />{cooking_time} min
+        <Icons.ClockIcon />{cooking_time} mins
       </p>
     </div>
     <a
