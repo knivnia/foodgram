@@ -54,7 +54,9 @@ ________
 <img align="center" src="backend/images_for_readme/recipe.png" width="900" height="640">
 
 ________
-<img align="left" src="backend/images_for_readme/shopping_list.png" width="450" height="440"> <img align="right" src="backend/images_for_readme/subscriptions.png" width="278" height="496">
+<img align="left" src="backend/images_for_readme/shopping_list.png" width="450" height="440">
+________
+<img align="right" src="backend/images_for_readme/subscriptions.png" width="278" height="496">
 
 
 ________
