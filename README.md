@@ -50,9 +50,12 @@ docker-compose exec <container ID> python manage.py collectstatic --no-input
 
 ![main page](backend/images_for_readme/main.png)
 
+
 ![recipe page](backend/images_for_readme/recipe.png)
 
+
 ![shopping list](backend/images_for_readme/shopping_list.png)
+
 
 ![subscriptions](backend/images_for_readme/subscriptions.png)
 
