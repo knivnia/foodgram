@@ -4,11 +4,11 @@
 
 ### Foodgram - recipe sharing website
 
-##### Description
+#### Description
 
 Service for sharing your favorite recipes, subscribe on other users, add recipes to the favorites and add items to a downloadable shopping list
 
-##### Technologies
+#### Technologies
 
 - Python 3.9
 - Django 4.1.2
@@ -17,7 +17,7 @@ Service for sharing your favorite recipes, subscribe on other users, add recipes
 - Docker Hub
 - GitHub Actions
 
-##### .env file template
+#### .env file template
 
 ```
 # in project_directory/project_name/project_name/.env
@@ -36,7 +36,7 @@ DB_PORT=5432
 ```
 
 
-##### Up the container
+#### Up the container
 
 ```
 docker-compose up -d --build 
@@ -46,19 +46,18 @@ docker-compose exec <container ID> python manage.py createsuperuser
 docker-compose exec <container ID> python manage.py collectstatic --no-input
 ```
 
-##### Some pages
+#### Some pages
 
-<img align="center" src="backend/images_for_readme/main.png" width="1000" height="1120"><br />
-
-
+<img align="center" src="backend/images_for_readme/main.png" width="900" height="1002">
 
 
-<img align="center" src="backend/images_for_readme/recipe.png" width="1000" height="730"><br />
+<img align="center" src="backend/images_for_readme/recipe.png" width="900" height="640">
+
+
+<img align="left" src="backend/images_for_readme/shopping_list.png" width="450" height="440">      <img align="right" src="backend/images_for_readme/subscriptions.png" width="278" height="496">
 
 
 
-
-<img align="left" src="backend/images_for_readme/shopping_list.png" width="450" height="440">      <img align="right" src="backend/images_for_readme/subscriptions.png" width="278" height="496"><br />
 
 
 #### Author (backend)
